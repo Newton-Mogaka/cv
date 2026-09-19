@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TaPesa: Tap-to-Pay M-Pesa Over NFC — Mogaka</title>
-  <meta name="description" content="NFC tap-to-pay M-Pesa app for Android, built on host card emulation and ECDSA-backed key storage." />
+  <title>TaPesa — Mogaka</title>
+  <meta name="description" content="A tap-to-pay M-Pesa app for Android, built on host card emulation and ECDSA-backed key storage." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -33,47 +33,31 @@
   </header>
 
   <main>
-    <article class="post">
-      <div class="post-header">
-        <a href="index.html" class="back-link">← Back to blog</a>
-        <p class="post-eyebrow">In Build · Mobile Payments</p>
-        <h1 class="post-title">TaPesa: Tap-to-Pay M-Pesa Over NFC</h1>
-        <p class="post-meta">
-          <span>2026</span>
-          <span>Android · NFC · ECDSA Key Storage</span>
+    <section class="hero">
+      <img src="../assets/wp3770481.jpg" alt="TaPesa" class="doc-thumb-img" loading="lazy">
+      <div>
+        <h1>TaPesa</h1>
+        <p class="work-meta">Android · NFC · ECDSA key storage · 2026</p>
+        <p class="work-abstract">
+          A tap-to-pay M-Pesa app for Android, built on host card emulation and ECDSA-backed key
+          storage. The app generates a unique cryptographic signature for each transaction, which
+          is verified by the M-Pesa backend to ensure authenticity and prevent fraud.
         </p>
-      </div>
-
-      <div class="post-hero-image">
-        <img src="../assets/wp3770481.jpg" alt="TaPesa: Tap-to-Pay M-Pesa Over NFC preview">
-      </div>
-
-      <div class="post-body">
-        <p class="lead">A tap-to-pay M-Pesa app for Android, built on host card emulation and ECDSA-backed key storage. The app generates a unique cryptographic signature for each transaction, which is verified by the M-Pesa backend to ensure authenticity and prevent fraud.</p>
-
-        <p class="post-callout">
-          The full write-up for TaPesa is coming soon — architecture decisions, what broke, and what I'd
-          do differently. In the meantime, the repo has the code.
-        </p>
-
-        <h2>Stack</h2>
-        <div class="built-with">
-          <span>Android</span>
-          <span>NFC</span>
-          <span>ECDSA</span>
-          <span>Mobile Payments</span>
+        <div class="tags">
+          <span>Android</span><span>NFC</span><span>ECDSA</span><span>Mobile Payments</span>
         </div>
-
-        <div class="post-links">
-          <a href="https://github.com/mnatakanijiiteajesasa/TaPesa" class="btn-ghost" target="_blank" rel="noopener">Repo ↗</a>
-        </div>
+        <a href="https://github.com/mnatakanijiiteajesasa/TaPesa" class="repo-pill" target="_blank" rel="noopener">Repo ↗</a>
       </div>
+    </section>
 
-      <div class="post-footer">
-        <a href="index.html" class="btn-ghost">← All posts</a>
-        <a href="../index.html#work" class="btn-ghost">Back to work →</a>
+    <section>
+      <h2>Read the full write-up</h2>
+      <div class="markdown-content">
+        <!-- Content would be here in a real implementation -->
+        <p>This is a placeholder for the full blog post content.</p>
+        <p>The actual content would be in Markdown format and converted to HTML.</p>
       </div>
-    </article>
+    </section>
   </main>
 
   <footer id="contact">
@@ -85,9 +69,11 @@
         <a href="https://t.me/mogaka_bot" target="_blank" rel="noopener">Telegram</a>
       </div>
     </div>
-    <p class="footer-bottom">© 2026 · Built with plain HTML, CSS &amp; JS · Chuka, Kenya</p>
+    <p class="footer-bottom">© 2026 · Built with plain HTML, CSS & JS · Chuka, Kenya</p>
   </footer>
 
   <script src="../script.js"></script>
+  <!-- Load intro.js -->
+  <script src="../intro.js"></script>
 </body>
 </html>

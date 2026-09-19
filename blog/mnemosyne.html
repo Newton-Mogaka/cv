@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mnemosyne: A Graph Neural Network Memory for Persistent AI Agents — Mogaka</title>
-  <meta name="description" content="Why I bet on GraphSAGE for agent memory retrieval, what a Twitter-timeline analogy taught me about ranking, and the identity bug that quietly broke everything." />
+  <title>Mnemosyne — Mogaka</title>
+  <meta name="description" content="GNN-ranked long-term memory for LLM agents, working through cold-start via persona bootstrapping." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -33,278 +33,32 @@
   </header>
 
   <main>
-    <article class="post">
-      <div class="post-header">
-        <a href="index.html" class="back-link">← Back to blog</a>
-        <p class="post-eyebrow">Prototype · GNN &amp; LLM Agents</p>
-        <h1 class="post-title">Mnemosyne: A Graph Neural Network Memory for Persistent AI Agents</h1>
-        <p class="post-meta">
-          <span>2026</span>
-          <span>Global AI Hackathon Series with Qwen</span>
-          <span>FastAPI · PyTorch Geometric · GraphSAGE</span>
+    <section class="hero">
+      <img src="../assets/Mosaïque_murale_Mnémosyne.jpg" alt="Mnemosyne" class="doc-thumb-img" loading="lazy">
+      <div>
+        <h1>Mnemosyne</h1>
+        <p class="work-meta">Graph neural networks · LLM agent · 2026</p>
+        <p class="work-abstract">
+          Mnemosyne is the goddess of memory in Greek mythology, the mother of the nine Muses, the keeper of all that is known and remembered.
+          Mnemosyne uses a graph neural network to model relationships
+          between entities and events, allowing agents to recall relevant information over extended
+          interactions.
         </p>
+        <div class="tags">
+          <span>GNN</span><span>LLM Agents</span><span>Memory Systems</span><span>AI Research</span>
+        </div>
+        <a href="https://github.com/mnatakanijiiteajesasa/mnemosyne" class="repo-pill" target="_blank" rel="noopener">Repo ↗</a>
       </div>
+    </section>
 
-      <div class="post-hero-image">
-        <img src="../assets/Mosaïque_murale_Mnémosyne.jpg" alt="Mnemosyne project visual">
+    <section>
+      <h2>Read the full write-up</h2>
+      <div class="markdown-content">
+        <!-- Content would be here in a real implementation -->
+        <p>This is a placeholder for the full blog post content.</p>
+        <p>The actual content would be in Markdown format and converted to HTML.</p>
       </div>
-
-      <div class="post-body">
-        <p class="lead">
-          Mnemosyne is the goddess of memory in Greek mythology, the mother of the nine Muses, the keeper of
-          all that is known and remembered. It's also the name of a memory system I built for AI agents — one
-          that scores what to remember using a graph neural network instead of similarity search alone.
-        </p>
-
-        <h2>Inspiration</h2>
-        <p>
-          From the competition brief, I was given a list of problems to choose from. I read through all of them.
-          Persistent memory was the one I kept coming back to — not because it looked easy, but because it felt
-          like the most honest problem on the list. Every other capability you might build into an agent runs
-          into the same wall eventually: the agent doesn't remember you. It doesn't know what you told it last
-          week, what you prefer, what you're working on, or what you already tried. You rebuild context from
-          scratch every session, and the agent stays a stranger no matter how many times you talk to it.
-        </p>
-        <p>
-          I wanted to build something that solved that at a level deeper than storing a transcript and replaying
-          it — a system where memory has structure, weight, and intelligence, where the agent doesn't just recall
-          what you said, but understands what matters, what's related, and what can safely be forgotten.
-        </p>
-        <p>
-          The architectural idea came from an unexpected direction. I'd spent a lot of time watching how
-          platforms like Twitter build personalized timelines from a user's very first interaction, and what
-          struck me was that the recommendation engine isn't just matching content to stated preferences — it's
-          learning a graph of relationships between topics, accounts, and engagement patterns. The platform is
-          reasoning over a graph of behavior, not a flat list of likes.
-        </p>
-        <p>
-          That observation turned into a direct question: if an agent's memories are nodes, and semantic
-          similarity creates edges between them, could a graph neural network learn which memories actually
-          matter for a given query better than vector search alone? Mnemosyne was built to test that hypothesis.
-        </p>
-
-        <h2>What I Learned</h2>
-        <p>
-          <strong>Persistent memory in production is a largely unsolved problem.</strong> Before writing a line
-          of code I researched how memory is actually handled in AI applications today. Most systems either
-          append the full conversation history to every prompt — which hits context limits fast and buries what
-          matters in noise — or keep a rolling summary that loses specificity over time. Neither gives an agent
-          genuine long-term memory.
-        </p>
-        <p>
-          <strong>Not all memories are the same kind of thing.</strong> A behavioral rule ("always give concise
-          answers"), a stable fact ("the user is a software engineer"), a stated preference ("the user prefers
-          dark mode"), and a past episode ("the user asked about async IO last Tuesday") have different
-          lifespans, different importance, and different roles in how an agent should reason. Building that
-          taxonomy into the schema from day one, rather than treating all memories as undifferentiated text, was
-          one of the most consequential early decisions in the project.
-        </p>
-        <p>
-          <strong>LangChain and LangGraph exist, and I chose not to use them.</strong> Both are widely used and
-          both include memory abstractions — conversation buffer memory, summary memory, vector-store-backed
-          memory, stateful agent loops. I studied them carefully. What I found was that these are convenience
-          wrappers over three simple patterns: append history, summarize it, or retrieve by similarity. None of
-          them offer typed memory, semantic graph structure, learned relevance scoring, or principled forgetting.
-          They're useful for shipping fast. They aren't memory infrastructure. I built from first principles
-          because the problem required it, and because I wanted to understand every component rather than
-          inherit behavior I couldn't see into.
-        </p>
-        <p>
-          <strong>GNNs hadn't been applied to agent memory this way before.</strong> Before committing to
-          GraphSAGE I searched extensively for prior work on graph neural networks applied specifically to
-          persistent AI agent memory retrieval. I found knowledge graphs for question answering, graph-based
-          recommendation systems, and GNNs in NLP generally — but nothing that applied learned graph-based
-          scoring to personal memory retrieval for a conversational agent. That absence was both a risk and an
-          opportunity: no playbook to follow, but a real shot at something novel if the hypothesis held.
-        </p>
-        <p>
-          <strong>The social media analogy runs deeper than it first appears.</strong> Both systems face the same
-          core challenge — given a large, growing set of items connected by relational structure, rank the ones
-          most relevant to this user right now. Twitter solves it with a graph of engagement signals. Mnemosyne
-          solves it with a graph of semantic similarity and access patterns, scored by a GNN trained on relevance
-          labels. Even the cold-start problem is structurally identical: a new user has no history, so the system
-          can't yet personalize, and has to degrade gracefully to a safe default while real signal accumulates.
-        </p>
-        <p>
-          <strong>Graceful degradation is a design discipline.</strong> Every learned component — the GNN
-          relevance scores, the cluster confidence — has to fall back to a safe baseline when data is sparse. A
-          system that fails hard at cold start isn't a memory system, it's a liability. Designing a confidence
-          gate so the GNN always runs but its output is only trusted in proportion to the evidence behind it was
-          one of the most important architectural calls in the project.
-        </p>
-        <p>
-          <strong>Memory is a UX problem as much as a technical one.</strong> A system that generates a fresh
-          random user ID every session structurally prevents memory from accumulating, no matter how well the
-          rest of the pipeline works. The single most impactful change in the entire project was replacing
-          dynamic ID generation with a fixed, persistent identifier. Architecture is nothing without coherent
-          identity across sessions.
-        </p>
-
-        <h2>How I Built It</h2>
-        <p>Mnemosyne runs a four-layer pipeline over every conversational turn, end to end.</p>
-
-        <h3>Memory schema</h3>
-        <p>
-          Every piece of information the agent learns is classified into one of four typed memory categories,
-          each with a distinct role and a base importance score that gets adjusted at write time with a keyword
-          boost:
-        </p>
-        <table class="post-table">
-          <thead>
-            <tr><th>Type</th><th>Role</th><th>Base importance</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>RULE</td><td>Behavioral directives the agent must follow</td><td>0.85</td></tr>
-            <tr><td>PREFERENCE</td><td>How the user likes things done</td><td>0.70</td></tr>
-            <tr><td>FACT</td><td>Stable information about the user</td><td>0.60</td></tr>
-            <tr><td>EPISODE</td><td>Specific past events</td><td>0.40</td></tr>
-          </tbody>
-        </table>
-
-        <h3>The memory graph</h3>
-        <p>
-          After every write, the new memory is compared against the user's existing memories in Qdrant. Any pair
-          whose cosine similarity clears a fixed threshold gets a weighted edge in the graph. This produces
-          semantic clusters — work memories connect to other work memories, preferences cluster with preferences
-          — giving the GNN a structured graph to reason over rather than an unconnected set of points.
-        </p>
-
-        <h3>The GraphSAGE model</h3>
-        <p>Each memory node is represented as a 391-dimensional feature vector, concatenating:</p>
-        <div class="equation">
-          x_i = [ e_i (384-dim sentence embedding) | t_i (4-dim one-hot memory type)
-                | s_i (importance score) | a_i (normalized age) | c_i (normalized access count) ]
-        </div>
-        <p>Two GraphSAGE layers with mean aggregation produce enriched node embeddings, where each layer combines a node's own representation with the mean of its neighbors':</p>
-        <div class="equation">
-          h_i^(l+1) = σ( W^(l) · CONCAT( h_i^(l),  MEAN_{j ∈ N(i)} h_j^(l) ) )
-        </div>
-        <p>The model has two parallel output heads:</p>
-        <ul>
-          <li><strong>Relevance head</strong> — a sigmoid MLP predicting whether a memory will be accessed, output in [0, 1].</li>
-          <li><strong>Cluster head</strong> — a softmax MLP predicting memory type from neighborhood structure, output in ℝ⁴.</li>
-        </ul>
-        <p>Training uses a combined loss with dual supervision:</p>
-        <div class="equation">
-          L = BCE(r_i, y_i^rel) + α · CE(c_i, y_i^type),  α = 0.5
-        </div>
-        <p>
-          The cluster head acts as a regularizer, stopping the shared embedding from collapsing to shortcuts that
-          ignore memory-type structure.
-        </p>
-
-        <h3>Hybrid retrieval</h3>
-        <p>
-          At inference time, four signals are blended into a single score per candidate memory: cosine similarity
-          from Qdrant, GNN relevance from GraphSAGE, recency (which decays smoothly with turns since last
-          access), and cluster confidence from the softmax head. Results are cached in Redis with a 30-second
-          TTL — short enough that memory state changes show up quickly, long enough to absorb repeated queries
-          within a turn.
-        </p>
-
-        <h3>Memory aging and forgetting</h3>
-        <p>
-          Every turn increments a <code>turns_since_access</code> counter for each of the user's active memories;
-          accessing a memory resets its counter to zero. Every ten turns, a forgetting pass archives memories
-          whose importance and recency have both decayed below threshold. Archived memories are never deleted,
-          only excluded from active retrieval — preserving the option to recover or audit history without losing
-          data.
-        </p>
-
-        <h3>The LLM integration</h3>
-        <p>
-          Retrieved memories are grouped by type and formatted into a natural-language context block prepended to
-          the system prompt sent to Qwen via Alibaba Cloud Model Studio. The prompt explicitly instructs the
-          model to treat RULE memories as binding behavioral instructions and everything else as context — a
-          distinction that matters enormously in practice and that generic memory systems typically ignore.
-        </p>
-
-        <h3>Tech stack</h3>
-        <div class="built-with">
-          <span>FastAPI</span><span>Python 3.11</span><span>MongoDB</span><span>Qdrant</span>
-          <span>PostgreSQL + pgvector</span><span>Redis</span><span>PyTorch</span>
-          <span>PyTorch Geometric (GraphSAGE)</span><span>sentence-transformers</span>
-          <span>Qwen (Alibaba Cloud Model Studio)</span><span>Streamlit</span><span>Docker Compose</span>
-          <span>Alibaba Cloud ECS</span>
-        </div>
-
-        <h2>Challenges</h2>
-        <p>
-          <strong>The user identity problem.</strong> The single most damaging bug in the project had nothing to
-          do with machine learning. Generating a fresh random user ID per session meant the system was
-          structurally incapable of accumulating memory, no matter how well every other component worked.
-          Memory persistence requires persistent identity — obvious in retrospect, invisible until you step back
-          from the code and ask why the graph never grows.
-        </p>
-        <p>
-          <strong>Silent payload omissions.</strong> The memory-write pipeline stored embeddings in Qdrant
-          without including the raw text content in the payload. Retrieval returned correct memory IDs and
-          similarity scores. The LLM received empty strings for every memory context. No error was raised
-          anywhere in the pipeline. This class of bug — where the system is correct by every measurable metric
-          but wrong at the boundary between components — is the hardest to find and the most important to design
-          against.
-        </p>
-        <p>
-          <strong>The cold-start problem.</strong> A new user has no memory graph. A sparse graph produces weak
-          GNN signal. Weak GNN signal means the system runs on flat vector retrieval — no better than a basic RAG
-          system. The fix is a confidence gate that blends GNN output with flat retrieval in proportion to how
-          much real evidence exists, so the GNN runs from turn one but its output is only trusted as far as the
-          evidence supports. The transition from cold start to full personalization is a smooth handoff rather
-          than a threshold the user can feel.
-        </p>
-        <p>
-          <strong>Deployment.</strong> First deployment to a real server on Alibaba Cloud ECS surfaced everything
-          local Docker Compose doesn't: SSH key configuration, security group rules, the difference between a
-          named Docker service hostname and localhost, and the fact that every port exposed in
-          <code>docker-compose.yml</code> also needs opening in the cloud firewall independently. None of these
-          are hard problems individually. All of them together, for the first time, on a deadline, are a real
-          challenge.
-        </p>
-
-        <h2>Accomplishments</h2>
-        <ul>
-          <li>Applying GNNs to a problem where they hadn't been applied before — GraphSAGE for personal AI agent memory retrieval, built and validated as a deliberate hypothesis rather than an obvious default.</li>
-          <li>A working GraphSAGE model integrated into a live inference pipeline, not a notebook experiment — it runs inside a containerized FastAPI app on every retrieval call and feeds directly into the hybrid scoring formula.</li>
-          <li>A multi-database architecture where every store serves a distinct access pattern: MongoDB for canonical records and graph edges, Qdrant for filtered vector search, Redis for short-TTL retrieval caching.</li>
-          <li>A retrieval pipeline that blends four independent, weighted signals into a single learned score — a real departure from ranking by similarity alone.</li>
-          <li>A principled forgetting mechanism that archives rather than deletes, tied automatically to the session turn counter.</li>
-        </ul>
-
-        <h2>What's Next</h2>
-        <p>
-          <strong>GNN training from real interaction data.</strong> The model currently initializes with random
-          weights and a heuristic relevance proxy for supervision. As Mnemosyne accumulates real usage — which
-          memories get retrieved, which lead to good responses, which get accessed repeatedly — those become
-          genuine training labels for a background worker that continuously fine-tunes the GNN.
-        </p>
-        <p>
-          <strong>Multi-user scaling.</strong> The architecture is correct for multi-user use but has only been
-          validated with a single persistent user. Real multi-user deployment needs per-user graph isolation at
-          scale, more aggressive caching, and background aging/forgetting workers that don't block the main
-          request path.
-        </p>
-        <p>
-          <strong>Memory export and portability.</strong> A user's memory graph should belong to them. The next
-          version adds an export mechanism — a structured format that lets someone take their memory out of the
-          system, inspect it, or import it elsewhere.
-        </p>
-        <p class="post-callout">
-          The long-term vision is for Mnemosyne to become the memory layer any AI agent can be built on — not a
-          product, but infrastructure. The same way a database isn't an application, Mnemosyne isn't an
-          assistant. It's what makes an assistant worth coming back to.
-        </p>
-
-        <div class="post-links">
-          <a href="https://github.com/mnatakanijiiteajesasa/mnemosyne" class="btn-ghost" target="_blank" rel="noopener">Repo ↗</a>
-          <a href="../docs/Mnemosyne System Documentation.pdf" class="btn-ghost" target="_blank" rel="noopener">Full system documentation (PDF) ↗</a>
-        </div>
-      </div>
-
-      <div class="post-footer">
-        <a href="index.html" class="btn-ghost">← All posts</a>
-        <a href="../index.html#work" class="btn-ghost">Back to work →</a>
-      </div>
-    </article>
+    </section>
   </main>
 
   <footer id="contact">
@@ -316,9 +70,11 @@
         <a href="https://t.me/mogaka_bot" target="_blank" rel="noopener">Telegram</a>
       </div>
     </div>
-    <p class="footer-bottom">© 2026 · Built with plain HTML, CSS &amp; JS · Chuka, Kenya</p>
+    <p class="footer-bottom">© 2026 · Built with plain HTML, CSS & JS · Chuka, Kenya</p>
   </footer>
 
   <script src="../script.js"></script>
+  <!-- Load intro.js -->
+  <script src="../intro.js"></script>
 </body>
 </html>

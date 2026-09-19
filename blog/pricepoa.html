@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PricePoa: A Grocery Price Agent That Lives Inside WhatsApp — Mogaka</title>
-  <meta name="description" content="WhatsApp-native AI agent for location-aware grocery price comparison across Kenyan supermarkets." />
+  <title>PricePoa — Mogaka</title>
+  <meta name="description" content="A grocery price comparison agent that lives entirely inside WhatsApp — no app to install." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -33,47 +33,32 @@
   </header>
 
   <main>
-    <article class="post">
-      <div class="post-header">
-        <a href="index.html" class="back-link">← Back to blog</a>
-        <p class="post-eyebrow">Live · WhatsApp Agent</p>
-        <h1 class="post-title">PricePoa: A Grocery Price Agent That Lives Inside WhatsApp</h1>
-        <p class="post-meta">
-          <span>2026</span>
-          <span>WhatsApp Business API · Location Services · Scraping Pipeline</span>
+    <section class="hero">
+      <img src="../assets/pricepoa.jpg" alt="PricePoa" class="doc-thumb-img" loading="lazy">
+      <div>
+        <h1>PricePoa</h1>
+        <p class="work-meta">WhatsApp Business API · Location services · Scraping pipeline · 2026</p>
+        <p class="work-abstract">
+          A grocery price comparison agent that lives entirely inside WhatsApp — no app to install.
+          Send a shopping list, get back the cheapest nearby basket across supermarkets, ranked by
+          distance and total cost. Built on a scraping pipeline feeding a location-aware pricing
+          index, designed for a market where WhatsApp is the default interface for almost everything.
         </p>
-      </div>
-
-      <div class="post-hero-image">
-        <img src="../assets/pricepoa.jpg" alt="PricePoa: A Grocery Price Agent That Lives Inside WhatsApp preview">
-      </div>
-
-      <div class="post-body">
-        <p class="lead">A grocery price comparison agent that lives entirely inside WhatsApp — no app to install. Send a shopping list, get back the cheapest nearby basket across supermarkets, ranked by distance and total cost. Built on a scraping pipeline feeding a location-aware pricing index, designed for a market where WhatsApp is the default interface for almost everything.</p>
-
-        <p class="post-callout">
-          The full write-up for PricePoa is coming soon — architecture decisions, what broke, and what I'd
-          do differently. In the meantime, the repo has the code.
-        </p>
-
-        <h2>Stack</h2>
-        <div class="built-with">
-          <span>WhatsApp API</span>
-          <span>MongoDB</span>
-          <span>Geolocation</span>
-          <span>Scrapy</span>
+        <div class="tags">
+          <span>WhatsApp API</span><span>MongoDB</span><span>Geolocation</span><span>Scrapy</span>
         </div>
-
-        <div class="post-links">
-          <a href="https://github.com/mnatakanijiiteajesasa/price-poa" class="btn-ghost" target="_blank" rel="noopener">Repo ↗</a>
-        </div>
+        <a href="https://github.com/mnatakanijiiteajesasa/price-poa" class="repo-pill" target="_blank" rel="noopener">Repo ↗</a>
       </div>
+    </section>
 
-      <div class="post-footer">
-        <a href="index.html" class="btn-ghost">← All posts</a>
-        <a href="../index.html#work" class="btn-ghost">Back to work →</a>
+    <section>
+      <h2>Read the full write-up</h2>
+      <div class="markdown-content">
+        <!-- Content would be here in a real implementation -->
+        <p>This is a placeholder for the full blog post content.</p>
+        <p>The actual content would be in Markdown format and converted to HTML.</p>
       </div>
-    </article>
+    </section>
   </main>
 
   <footer id="contact">
@@ -85,9 +70,11 @@
         <a href="https://t.me/mogaka_bot" target="_blank" rel="noopener">Telegram</a>
       </div>
     </div>
-    <p class="footer-bottom">© 2026 · Built with plain HTML, CSS &amp; JS · Chuka, Kenya</p>
+    <p class="footer-bottom">© 2026 · Built with plain HTML, CSS & JS · Chuka, Kenya</p>
   </footer>
 
   <script src="../script.js"></script>
+  <!-- Load intro.js -->
+  <script src="../intro.js"></script>
 </body>
 </html>

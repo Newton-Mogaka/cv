@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ChaiMetrics: Relational Yield Forecasting for 240 Tea Farms — Mogaka</title>
+  <title>ChaiMetrics — Mogaka</title>
   <meta name="description" content="Yield prediction and relational farm-factory analysis for 240 KTDA smallholder tea farms." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -33,47 +33,34 @@
   </header>
 
   <main>
-    <article class="post">
-      <div class="post-header">
-        <a href="index.html" class="back-link">← Back to blog</a>
-        <p class="post-eyebrow">Live · ML Platform</p>
-        <h1 class="post-title">ChaiMetrics: Relational Yield Forecasting for 240 Tea Farms</h1>
-        <p class="post-meta">
-          <span>2026</span>
-          <span>PyTorch Geometric · XGBoost · SARIMA · Flask/React</span>
+    <section class="hero">
+      <img src="../assets/chaimetrics.jpg" alt="ChaiMetrics" class="doc-thumb-img" loading="lazy">
+      <div>
+        <h1>ChaiMetrics</h1>
+        <p class="work-meta">PyTorch Geometric · XGBoost · SARIMA · Flask/React · 2026</p>
+        <p class="work-abstract">
+          An ML platform for KTDA smallholder tea farmers spanning 240 farms and 15 factories.
+          Yield forecasting runs on gradient-boosted trees and SARIMA time series, while a graph
+          neural network models the farm-factory relational structure directly — treating
+          collection routes and processing dependencies as a graph rather than flattening them
+          into tabular features. An LLM narration layer translates model output into plain-language
+          guidance for farmers with no ML background.
         </p>
-      </div>
-
-      <div class="post-hero-image">
-        <img src="../assets/chaimetrics.jpg" alt="ChaiMetrics: Relational Yield Forecasting for 240 Tea Farms preview">
-      </div>
-
-      <div class="post-body">
-        <p class="lead">An ML platform for KTDA smallholder tea farmers spanning 240 farms and 15 factories. Yield forecasting runs on gradient-boosted trees and SARIMA time series, while a graph neural network models the farm-factory relational structure directly — treating collection routes and processing dependencies as a graph rather than flattening them into tabular features. An LLM narration layer translates model output into plain-language guidance for farmers with no ML background.</p>
-
-        <p class="post-callout">
-          The full write-up for ChaiMetrics is coming soon — architecture decisions, what broke, and what I'd
-          do differently. In the meantime, the repo has the code.
-        </p>
-
-        <h2>Stack</h2>
-        <div class="built-with">
-          <span>PyTorch Geometric</span>
-          <span>XGBoost</span>
-          <span>SARIMA</span>
-          <span>Ollama</span>
+        <div class="tags">
+          <span>PyTorch Geometric</span><span>XGBoost</span><span>SARIMA</span><span>Ollama</span>
         </div>
-
-        <div class="post-links">
-          <a href="https://github.com/mnatakanijiiteajesasa/chai-analytics" class="btn-ghost" target="_blank" rel="noopener">Repo ↗</a>
-        </div>
+        <a href="https://github.com/mnatakanijiiteajesasa/chai-analytics" class="repo-pill" target="_blank" rel="noopener">Repo ↗</a>
       </div>
+    </section>
 
-      <div class="post-footer">
-        <a href="index.html" class="btn-ghost">← All posts</a>
-        <a href="../index.html#work" class="btn-ghost">Back to work →</a>
+    <section>
+      <h2>Read the full write-up</h2>
+      <div class="markdown-content">
+        <!-- Content would be here in a real implementation -->
+        <p>This is a placeholder for the full blog post content.</p>
+        <p>The actual content would be in Markdown format and converted to HTML.</p>
       </div>
-    </article>
+    </section>
   </main>
 
   <footer id="contact">
@@ -85,9 +72,11 @@
         <a href="https://t.me/mogaka_bot" target="_blank" rel="noopener">Telegram</a>
       </div>
     </div>
-    <p class="footer-bottom">© 2026 · Built with plain HTML, CSS &amp; JS · Chuka, Kenya</p>
+    <p class="footer-bottom">© 2026 · Built with plain HTML, CSS & JS · Chuka, Kenya</p>
   </footer>
 
   <script src="../script.js"></script>
+  <!-- Load intro.js -->
+  <script src="../intro.js"></script>
 </body>
 </html>
