@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Papers — Mogaka</title>
+  <meta name="description" content="Research papers and technical documentation" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav">
+    <a href="index.html" class="brand">Mogaka<span class="brand-dot">.</span></a>
+    <nav class="nav-links">
+      <a href="builds.html">Builds</a>
+      <a href="work.html">Work</a>
+      <a href="papers.html">Papers</a>
+      <a href="blog/index.html">Blogs</a>
+      <a href="malware.html">Malware</a>
+    </nav>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme" title="Toggle theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2.5v3M12 18.5v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2.5 12h3M18.5 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/>
+      </svg>
+    </button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-text">
+        <img src="assets/yao.jpg" alt="Newton Mogaka" class="hero-avatar" />
+        <p class="eyebrow">Newton Mogaka · Nairobi, Kenya</p>
+        <h1>Research Papers</h1>
+        <p class="hero-sub">
+          Academic papers, technical documentation, and research publications
+        </p>
+        <div class="hero-links">
+          <a href="malware.html" class="btn-primary">See Malware Research →</a>
+          <a href="https://github.com/Newton-Mogaka" class="btn-ghost" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+
+      <div class="hero-graph">
+        <img src="assets/recon.jpg" alt="Newton Mogaka" class="profile-photo">
+      </div>
+    </section>
+
+    <section id="papers" class="papers">
+      <h2>Papers</h2>
+      <div class="paper-card-wrap">
+        <a href="docs/Mnemosyne System Documentation.pdf" target="_blank" rel="noopener" class="paper-card">
+          <div class="paper-visual">
+            <div class="paper-placeholder">PDF</div>
+          </div>
+          <div class="paper-body">
+            <h3 class="paper-title">Mnemosyne: A Graph-Based Long-Term Memory for LLM Agents</h3>
+            <p class="paper-meta">2026 · PDF</p>
+          </div>
+        </a>
+        <a href="docs/Newton and Vivian project proposal.pdf" target="_blank" rel="noopener" class="paper-card">
+          <div class="paper-visual">
+            <div class="paper-placeholder">PDF</div>
+          </div>
+          <div class="paper-body">
+            <h3 class="paper-title">Chronos: A Four-Stage Middleware Pipeline for Real-Time AI Context</h3>
+            <p class="paper-meta">2025 · PDF</p>
+          </div>
+        </a>
+        <a href="docs/Research Project Documentation.pdf" target="_blank" rel="noopener" class="paper-card">
+          <div class="paper-visual">
+            <div class="paper-placeholder">PDF</div>
+          </div>
+          <div class="paper-body">
+            <h3 class="paper-title">Research Project: Final Year Research Project</h3>
+            <p class="paper-meta">2026 · PDF</p>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact">
+    <div class="footer-top">
+      <p class="footer-line">An engineer sometimes</p>
+      <div class="footer-links">
+        <a href="https://github.com/Newton-Mogaka" target="_blank" rel="noopener">GitHub</a>
+        <a href="mailto:mogakanewton0@gmail.com">Email</a>
+        <a href="https://t.me/mogaka_bot" target="_blank" rel="noopener">Telegram</a>
+      </div>
+    </div>
+    <p class="footer-bottom">© 2026 · Built with plain HTML, CSS & JS · Chuka, Kenya</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <!-- Load intro.js -->
+  <script src="intro.js"></script>
+</body>
+</html>

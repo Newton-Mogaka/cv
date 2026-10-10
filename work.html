@@ -3,23 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Indie Engineer Educator - Nairobi</title>
-  <meta name="description" content="Building infrastructure for problems no one else is solving, from Nairobi." />
+  <title>Work — Mogaka</title>
+  <meta name="description" content="Completed projects and professional work" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <header class="nav">
-
     <a href="index.html" class="brand">Mogaka<span class="brand-dot">.</span></a>
     <nav class="nav-links">
+      <a href="builds.html">Builds</a>
       <a href="work.html">Work</a>
       <a href="papers.html">Papers</a>
       <a href="blog/index.html">Blogs</a>
-      <a href="shelf.html">Bookshelf</a>
+      <a href="malware.html">Malware</a>
     </nav>
     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme" title="Toggle theme">
       <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -37,18 +36,12 @@
       <div class="hero-text">
         <img src="assets/yao.jpg" alt="Newton Mogaka" class="hero-avatar" />
         <p class="eyebrow">Newton Mogaka · Nairobi, Kenya</p>
-        <h1>Systems Engineer</h1>
-          <li>AI & ML</li>
-          <li>Data Engineering</li>
-          <li>General Backend Development</li>
+        <h1>Professional Work</h1>
         <p class="hero-sub">
-          IT & civil engineering student. I spend time designing and building solutions to
-          problems.
-          I animate sometimes and write occasionally too
-          checkout my work, projects, and papers below. Feel free to reach out.
+          Completed projects, case studies, and professional engineering work
         </p>
         <div class="hero-links">
-          <a href="work.html" class="btn-primary">See the work →</a>
+          <a href="papers.html" class="btn-primary">See Research Papers →</a>
           <a href="https://github.com/Newton-Mogaka" class="btn-ghost" target="_blank" rel="noopener">GitHub</a>
         </div>
       </div>
@@ -58,48 +51,6 @@
       </div>
     </section>
 
-    <section id="builds" class="builds">
-      <h2>Active Builds</h2>
-
-      <ul class="build-list">
-        <li class="build-row">
-          <span class="status live">LIVE</span>
-          <span class="build-name">PricePoa</span>
-          <span class="build-desc">WhatsApp-native AI agent for location-aware grocery price comparison across Kenyan supermarkets.</span>
-          <span class="build-date">2026</span>
-        </li>
-        <li class="build-row">
-          <span class="status live">LIVE</span>
-          <span class="build-name">ChaiMetrics</span>
-          <span class="build-desc">Yield prediction and relational farm-factory analysis for 240 KTDA smallholder tea farms.</span>
-          <span class="build-date">2026</span>
-        </li>
-        <li class="build-row">
-          <span class="status build">IN BUILD</span>
-          <span class="build-name">TaPesa</span>
-          <span class="build-desc">NFC tap-to-pay M-Pesa app for Android, built on host card emulation and ECDSA-backed key storage.</span>
-          <span class="build-date">2026</span>
-        </li>
-        <li class="build-row">
-          <span class="status build">IN BUILD</span>
-          <span class="build-name">Accountability</span>
-          <span class="build-desc">Civic accountability platform tracking Nyeri County governance, budgets, and elected officials.</span>
-          <span class="build-date">2025–26</span>
-        </li>
-        <li class="build-row">
-          <span class="status proto">PROTOTYPE</span>
-          <span class="build-name">Mnemosyne</span>
-          <span class="build-desc">GNN-ranked long-term memory for LLM agents, working through cold-start via persona bootstrapping.</span>
-          <span class="build-date">2026</span>
-        </li>
-        <li class="build-row">
-          <span class="status proto">PROTOTYPE</span>
-          <span class="build-name">Chronos</span>
-          <span class="build-desc">Four-stage middleware pipeline — ingest, process, index, inject — for real-time AI context.</span>
-          <span class="build-date">2025</span>
-        </li>
-      </ul>
-    </section>
     <section id="work" class="work">
       <h2>Work</h2>
 
@@ -173,6 +124,7 @@
         </a>
         <a href="https://github.com/Newton-Mogaka/Accountability" class="repo-pill" target="_blank" rel="noopener">Repo ↗</a>
       </div>
+
       <div class="work-card-wrap">
         <a href="blog/tapesa.html" class="work-card">
           <div class="work-visual">
@@ -194,6 +146,7 @@
         </a>
         <a href="https://github.com/Newton-Mogaka/TaPesa" class="repo-pill" target="_blank" rel="noopener">Repo ↗</a>
       </div>
+
       <div class="work-card-wrap">
         <a href="blog/mnemosyne.html" class="work-card">
           <div class="work-visual">
@@ -216,6 +169,7 @@
         </a>
         <a href="https://github.com/Newton-Mogaka/mnemosyne" class="repo-pill" target="_blank" rel="noopener">Repo ↗</a>
       </div>
+
       <div class="work-card-wrap">
         <a href="blog/ResearchProject.html" class="work-card">
           <div class="work-visual">
@@ -236,61 +190,6 @@
         </a>
         <a href="https://github.com/Newton-Mogaka/mnemosyne" class="repo-pill" target="_blank" rel="noopener">Repo ↗</a>
       </div>
-    </section>
-    <section id="papers" class="papers">
-      <h2>Papers</h2>
-      <div class="paper-card-wrap">
-        <a href="docs/Mnemosyne System Documentation.pdf" target="_blank" rel="noopener" class="paper-card">
-          <div class="paper-visual">
-            <div class="paper-placeholder">PDF</div>
-          </div>
-          <div class="paper-body">
-            <h3 class="paper-title">Mnemosyne: A Graph-Based Long-Term Memory for LLM Agents</h3>
-            <p class="paper-meta">2026 · PDF</p>
-          </div>
-        </a>
-        <a href="docs/Newton and Vivian project proposal.pdf" target="_blank" rel="noopener" class="paper-card">
-          <div class="paper-visual">
-            <div class="paper-placeholder">PDF</div>
-          </div>
-          <div class="paper-body">
-            <h3 class="paper-title">Chronos: A Four-Stage Middleware Pipeline for Real-Time AI Context</h3>
-            <p class="paper-meta">2025 · PDF</p>
-          </div>
-        </a>
-        <a href="docs/Research Project Documentation.pdf" target="_blank" rel="noopener" class="paper-card">
-          <div class="paper-visual">
-            <div class="paper-placeholder">PDF</div>
-          </div>
-          <div class="paper-body">
-            <h3 class="paper-title">Research Project: Final Year Research Project</h3>
-            <p class="paper-meta">2026 · PDF</p>
-          </div>
-        </a>
-      </div>
-    </section>
-    <section id="malware" class="malware">
-      <h2>Malware</h2>
-      <p class="llm-intro">
-        I study malware and zero-day exploits.
-      </p>
-      <ul class="malware-list">
-        <li class="malware-row">
-          <span class="malware-name">Mini Shai Hulud</span>
-          <span class="malware-meta">2026 · Node Packages</span>
-          <a href="https://ollama.com" target="_blank" rel="noopener" class="malware-link">Learn More →</a>
-        </li>
-        <li class="malware-row">
-          <span class="malware-name">Mini Shai Hulud</span>
-          <span class="malware-meta">2026 · Python Packages</span>
-          <a href="https://www.langchain.com" target="_blank" rel="noopener" class="malware-link">Learn More →</a>
-        </li>
-        <li class="malware-row">
-          <span class="malware-name">Visual Basic Trojan Horse</span>
-          <span class="malware-meta">2025</span>
-          <a href="https://github.com/Newton-Mogaka/symposium.git" target="_blank" rel="noopener" class="malware-link">Learn More →</a>
-        </li>
-      </ul>
     </section>
   </main>
 
