@@ -95,7 +95,6 @@
 
       await stage1(container, log, state);
       if (!state.skipped) await stage2(container, log, state);
-      if (!state.skipped) await stage3(container, state);
     } catch (err) {
       console.error('Intro failed, skipping:', err);
     } finally {
@@ -474,69 +473,5 @@
     stage.destroy();
   }
 
-  // ---------- Stage 3: terminal reveal ----------
-  function stage3(container, state) {
-    return new Promise(resolve => {
-      if (!document.getElementById('intro-blink-style')) {
-        const style = el('style', { id: 'intro-blink-style' });
-        style.textContent = '@keyframes introBlink{0%,49%{opacity:1}50%,100%{opacity:0}}';
-        document.head.appendChild(style);
-      }
-
-      const term = el('div', {}, {
-        position: 'absolute', top: '50%', left: '50%', width: '80%', maxWidth: '600px',
-        height: '60%', maxHeight: '400px', background: '#000', border: '2px solid ' + GREEN,
-        borderRadius: '12px', color: GREEN, padding: '16px', boxSizing: 'border-box',
-        display: 'flex', flexDirection: 'column', fontFamily: FONT, overflow: 'hidden',
-        opacity: '0', transform: 'translate(-50%,-50%) scale(.8)',
-        transition: 'opacity .5s ease, transform .5s ease'
-      });
-      container.appendChild(term);
-
-      const bar = el('div', {}, {
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        padding: '0 4px 8px', borderBottom: '1px solid ' + GREEN, marginBottom: '10px'
-      });
-      bar.appendChild(el('div', { textContent: 'PORTFOLIO TERMINAL' }, { fontSize: '14px', fontWeight: 'bold' }));
-      const dots = el('div', {}, { display: 'flex', gap: '8px' });
-      ['#ff5f56', '#ffbd2e', '#27c93f'].forEach(c =>
-        dots.appendChild(el('div', { textContent: '\u25CF' }, { color: c, fontSize: '12px' })));
-      bar.appendChild(dots);
-      term.appendChild(bar);
-
-      const content = el('div', {}, { flex: '1', overflowY: 'auto', whiteSpace: 'pre-wrap', fontSize: '15px', lineHeight: '1.5' });
-      const txt = document.createTextNode('');
-      const cursor = el('span', { textContent: '\u258A' }, { animation: 'introBlink 1s step-end infinite' });
-      content.append(txt, cursor);
-      term.appendChild(content);
-
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        term.style.opacity = '1';
-        term.style.transform = 'translate(-50%,-50%) scale(1)';
-      }));
-
-      const message = "welcome to my portfolio\ntype 'help' for commands\n";
-      let i = 0, done = false, iv = 0, t1 = 0;
-      const finish = () => {
-        if (done) return;
-        done = true;
-        clearInterval(iv);
-        clearTimeout(t1);
-        term.style.opacity = '0';
-        term.style.transform = 'translate(-50%,-50%) scale(.8)';
-        setTimeout(() => { term.remove(); resolve(); }, 500);
-      };
-      state.hooks.push(finish);
-
-      iv = setInterval(() => {
-        if (i < message.length) {
-          txt.nodeValue += message[i++];
-          tickSound(state.audio, 800);
-        } else {
-          clearInterval(iv);
-          t1 = setTimeout(finish, 1500);
-        }
-      }, 40);
-    });
   }
 })();
