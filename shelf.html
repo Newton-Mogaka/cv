@@ -38,6 +38,17 @@ h1{text-align:center;font-weight:normal;letter-spacing:2px;margin:24px 0 4px;fon
 #ttl{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 #view{position:absolute;top:48px;bottom:0;left:0;right:0;overflow:auto;text-align:center}
 #view canvas{max-width:100%}
+#view{transition:left .2s}
+#toc{position:absolute;top:48px;bottom:0;left:0;width:280px;max-width:85%;z-index:3;overflow:auto;
+  background:#efe3c8;border-right:1px solid #0003;box-shadow:4px 0 14px #0004;
+  transform:translateX(-100%);transition:transform .2s}
+#reader.toc-open #toc{transform:none}
+#toc button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid #0001;
+  padding:10px 12px;font:14px/1.3 Georgia,serif;color:#2a1a0c;cursor:pointer}
+#toc button:hover{background:#e4d3ad}
+#toc button.on{background:#d9c49a;font-weight:700}
+#toc .empty{padding:14px;opacity:.7;font-size:14px}
+@media(min-width:700px){#reader.toc-open #view{left:280px}}
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#000c;color:#fff;padding:8px 14px;border-radius:6px;display:none;z-index:60}
 </style>
 </head>
@@ -48,11 +59,13 @@ h1{text-align:center;font-weight:normal;letter-spacing:2px;margin:24px 0 4px;fon
 
 <div id="reader" hidden>
   <div id="bar">
+    <button id="tocbtn" aria-label="Contents" title="Contents">&#9776;</button>
     <button id="prev" aria-label="Previous">&lsaquo;</button>
     <button id="next" aria-label="Next">&rsaquo;</button>
     <span id="ttl"></span><span id="pos"></span>
     <button id="close" aria-label="Close">&times;</button>
   </div>
+  <div id="toc"></div>
   <div id="view"></div>
 </div>
 <div id="toast"></div>
@@ -70,7 +83,8 @@ const store = {
   set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }
 };
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-let books = [], go = () => {}, cleanup = () => {}, queue = Promise.resolve(), io = null;
+let books = [], go = () => {}, cleanup = () => {}, relayout = () => {}, queue = Promise.resolve(), io = null;
+let tocItems = [], tocPick = () => {};
 
 fetch('books.json', { cache: 'no-cache' })
   .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
@@ -167,8 +181,33 @@ function toast(m) {
   setTimeout(() => el.style.display = 'none', 2000);
 }
 
+function showToc(items, onPick) {
+  tocItems = items; tocPick = onPick || (() => {});
+  $('#toc').innerHTML = items.length
+    ? items.map((it, i) => `<button data-i="${i}" style="padding-left:${12 + it.depth * 14}px">${esc((it.label || '(untitled)').trim())}</button>`).join('')
+    : '<p class="empty">No table of contents in this book.</p>';
+}
+function markToc(i) {
+  $('#toc').querySelectorAll('button').forEach((el, j) => {
+    el.classList.toggle('on', j === i);
+    if (j === i) el.scrollIntoView({ block: 'nearest' });
+  });
+}
+function setToc(open) {
+  $('#reader').classList.toggle('toc-open', open);
+  setTimeout(() => relayout(), 230);
+}
+$('#tocbtn').onclick = () => setToc(!$('#reader').classList.contains('toc-open'));
+$('#toc').addEventListener('click', e => {
+  const el = e.target.closest('button'); if (!el) return;
+  tocPick(tocItems[+el.dataset.i]);
+  if (innerWidth < 700) setToc(false);
+});
+
 async function openBook(b) {
   $('#reader').hidden = false; $('#ttl').textContent = b.title; $('#pos').textContent = '';
+  tocItems = []; $('#toc').innerHTML = '<p class="empty">Loading&hellip;</p>';
+  $('#reader').classList.toggle('toc-open', innerWidth >= 700);
   document.body.style.overflow = 'hidden';
   try {
     if (b.file.toLowerCase().endsWith('.pdf')) await openPdf(b); else await openEpub(b);
@@ -179,15 +218,53 @@ async function openEpub(b) {
   const book = ePub(b.file, { openAs: 'epub' });
   const r = book.renderTo('view', { width: '100%', height: '100%', flow: 'paginated', spread: 'none' });
   const key = 'pos:' + b.file;
+  const base = h => String(h || '').split('#')[0];
   const upd = l => {
     if (l && l.start && book.locations.length())
       store.set('pct:' + b.file, Math.round(book.locations.percentageFromCfi(l.start.cfi) * 100));
   };
+  const mark = l => {
+    if (!l || !l.start) return;
+    const h = base(l.start.href);
+    const i = tocItems.findIndex(t => t.key && (base(t.key).endsWith(h) || h.endsWith(base(t.key))));
+    if (i >= 0) markToc(i);
+  };
+  book.loaded.navigation.then(nav => {
+    const flat = [];
+    const walk = (a, d) => (a || []).forEach(t => {
+      flat.push({ label: t.label, depth: d, key: t.href });
+      walk(t.subitems, d + 1);
+    });
+    walk(nav.toc, 0);
+    showToc(flat, it => r.display(it.key));
+    mark(r.currentLocation());
+  }).catch(() => showToc([]));
   await r.display(store.get(key) || undefined);
-  r.on('relocated', l => { store.set(key, l.start.cfi); upd(l); });
+  r.on('relocated', l => { store.set(key, l.start.cfi); upd(l); mark(l); });
   book.ready.then(() => book.locations.generate(1200)).then(() => upd(r.currentLocation())).catch(() => {});
   go = d => d > 0 ? r.next() : r.prev();
+  relayout = () => r.resize();
   cleanup = () => book.destroy();
+}
+
+// PDF outline -> flat list of { label, depth, key: page number }
+async function pdfToc(doc) {
+  const out = await doc.getOutline();
+  const items = [];
+  const walk = async (list, d) => {
+    for (const o of list) {
+      let page = null;
+      try {
+        let dest = o.dest;
+        if (typeof dest === 'string') dest = await doc.getDestination(dest);
+        if (Array.isArray(dest)) page = typeof dest[0] === 'object' ? (await doc.getPageIndex(dest[0])) + 1 : dest[0] + 1;
+      } catch (e) {}
+      items.push({ label: o.title, depth: d, key: page });
+      if (o.items && o.items.length) await walk(o.items, d + 1);
+    }
+  };
+  if (out) await walk(out, 0);
+  return items;
 }
 
 async function openPdf(b) {
@@ -195,6 +272,11 @@ async function openPdf(b) {
   const key = 'pos:' + b.file, view = $('#view');
   let n = Math.min(doc.numPages, +store.get(key) || 1);
   const canvas = document.createElement('canvas'); view.appendChild(canvas);
+  const markPdf = () => {
+    let idx = -1;
+    tocItems.forEach((t, i) => { if (t.key && t.key <= n) idx = i; });
+    if (idx >= 0) markToc(idx);
+  };
   const draw = async () => {
     const p = await doc.getPage(n), dpr = devicePixelRatio || 1;
     const base = p.getViewport({ scale: 1 });
@@ -205,14 +287,20 @@ async function openPdf(b) {
     $('#pos').textContent = n + ' / ' + doc.numPages;
     view.scrollTop = 0;
     store.set(key, n); store.set('pct:' + b.file, Math.round(n / doc.numPages * 100));
+    markPdf();
   };
   go = d => { n = Math.max(1, Math.min(doc.numPages, n + d)); draw(); };
+  relayout = () => draw();
   cleanup = () => doc.destroy();
+  pdfToc(doc).then(items => {
+    showToc(items, it => { if (it.key) { n = it.key; draw(); } });
+    markPdf();
+  }).catch(() => showToc([]));
   await draw();
 }
 
 function closeReader() {
-  cleanup(); cleanup = () => {}; go = () => {};
+  cleanup(); cleanup = () => {}; go = () => {}; relayout = () => {}; tocItems = [];
   $('#view').innerHTML = ''; $('#reader').hidden = true;
   document.body.style.overflow = '';
   render();   // refresh progress badges
