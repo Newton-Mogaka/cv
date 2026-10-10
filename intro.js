@@ -72,9 +72,15 @@ async function initIntro(overlay) {
   clickToEnterBtn.style.outline = 'none';
   container.appendChild(clickToEnterBtn);
 
-  // Wait for click to start the intro
-  await new Promise(resolve => {
+  // Wait for click to start the intro, but also timeout after 5 seconds
+  await new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      // If no click after 5 seconds, start anyway (but warn about audio)
+      clickToEnterBtn.remove();
+      resolve();
+    }, 5000);
     clickToEnterBtn.addEventListener('click', () => {
+      clearTimeout(timeout);
       clickToEnterBtn.remove();
       resolve();
     }, { once: true });
