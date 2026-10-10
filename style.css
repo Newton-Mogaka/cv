@@ -11,8 +11,8 @@
   --grid: rgba(0, 0, 0, 0.06);
 
   /* type */
-  --font-display: 'Jakarta Sans', 'Space Grotesk', sans-serif;
-  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-display: 'Jakarta Sans';
+  --font-body: 'Jakarta Sans';
   --font-mono: 'IBM Plex Mono', monospace;
 
   --radius: 3px;
