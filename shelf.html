@@ -6,26 +6,30 @@
 <title>Bookshelf</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:#150d07;color:#e8dcc8;font-family:Georgia,serif}
-h1{text-align:center;font-weight:normal;letter-spacing:2px;margin:28px 0 6px}
-#count{text-align:center;opacity:.6;font-size:14px;margin-bottom:20px}
-#shelf{max-width:1000px;margin:0 auto 60px;padding:22px 18px 0;
-  background:repeating-linear-gradient(90deg,#3a2414 0 6px,#33200f 6px 11px,#3f2817 11px 19px);
-  border:14px solid #5a3a22;border-bottom-width:0;border-radius:6px 6px 0 0;
-  box-shadow:inset 0 0 70px #000,0 10px 40px #000}
-.row{display:flex;align-items:flex-end;gap:2px;padding:0 10px;min-height:200px}
-.plank{height:20px;margin:0 -18px;position:relative;
-  background:linear-gradient(#a8754a,#7a4e2c 18%,#5e3a20 60%,#3c2412);
-  box-shadow:0 10px 16px #000b}
+body{margin:0;min-height:100vh;background:#2a1a0e;color:#f1e4cf;font-family:Georgia,serif}
+h1{text-align:center;font-weight:normal;letter-spacing:2px;margin:24px 0 4px;font-size:22px}
+#count{text-align:center;opacity:.6;font-size:13px;margin-bottom:16px}
+#shelf{max-width:860px;margin:0 auto 50px;padding:0 10px;
+  background:linear-gradient(90deg,#4a2e1b,#8a5a3a 5%,#a06f48 50%,#8a5a3a 95%,#4a2e1b);
+  border:8px solid #5a3a22;border-bottom:0;box-shadow:0 10px 40px #000}
+.row{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:10px;align-items:end;
+  padding:26px 6px 0;background:linear-gradient(#0006,#0000 50px)}
+.plank{height:18px;margin:0 -10px;position:relative;
+  background:linear-gradient(#d9ab74,#b98652 25%,#8a5a35 70%,#5e3a20);box-shadow:0 8px 14px #0009}
 .plank::after{content:"";position:absolute;inset:0;
-  background:repeating-linear-gradient(90deg,#0000 0 37px,#0003 37px 39px,#0000 39px 91px,#fff1 91px 92px)}
-.book{height:var(--h);width:var(--w);background:linear-gradient(90deg,#0006,#0000 14%,#ffffff22 48%,#0000 86%,#0007),var(--c);
-  color:#f3e9d2;border:0;border-radius:2px 2px 0 0;cursor:pointer;padding:12px 0;overflow:hidden;
-  writing-mode:vertical-rl;font:600 12px Georgia,serif;letter-spacing:.5px;
-  box-shadow:inset 0 0 0 1px #0004,2px 0 4px #0008;transition:transform .18s}
-.book:hover,.book:focus-visible{transform:translateY(-12px);outline:none}
-.book small{font-weight:normal;opacity:.7;margin-top:10px}
-.book.locked{cursor:default}
+  background:repeating-linear-gradient(90deg,#0000 0 41px,#0002 41px 43px,#0000 43px 97px,#fff2 97px 98px)}
+.book{position:relative;display:block;width:100%;aspect-ratio:2/3;border:0;padding:0;cursor:pointer;
+  background:var(--c) center/cover no-repeat;box-shadow:0 2px 6px #000a,inset 2px 0 3px #fff3;
+  transition:transform .18s;color:#f6ecd8}
+.book:hover,.book:focus-visible{transform:translateY(-8px);outline:none}
+.ph{display:flex;flex-direction:column;justify-content:center;height:100%;padding:10px 8px;
+  font:600 clamp(11px,2.6vw,15px)/1.25 Georgia,serif;text-align:center;
+  background:linear-gradient(90deg,#0005,#0000 12%),repeating-linear-gradient(0deg,#0000 0 6px,#fff1 6px 7px)}
+.ph small{display:block;margin-top:8px;font-weight:normal;opacity:.75;font-size:.8em}
+.has .ph{display:none}
+.pct{position:absolute;right:6px;bottom:6px;width:34px;height:34px;border-radius:50%;
+  background:#000a;color:#fff;font:600 11px/34px sans-serif;text-align:center;font-style:normal;
+  box-shadow:0 0 0 2px #fff4}
 #reader{position:fixed;inset:0;z-index:50;background:#f4ecd8;color:#2a1a0c}
 #reader[hidden]{display:none}
 #bar{position:absolute;top:0;left:0;right:0;height:48px;display:flex;align-items:center;gap:10px;padding:0 12px;
@@ -60,33 +64,97 @@ h1{text-align:center;font-weight:normal;letter-spacing:2px;margin:28px 0 6px}
 const $ = s => document.querySelector(s);
 const PAL = ['#7a1f1f','#1f3d5c','#2f4a2b','#5a3b1e','#3b2a52','#8a6a1c','#22454a','#6b2c3e'];
 const hash = s => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const store = {
   get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }
 };
-let books = [], go = () => {}, cleanup = () => {};
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+let books = [], go = () => {}, cleanup = () => {}, queue = Promise.resolve(), io = null;
 
-fetch('books.json').then(r => r.json()).then(b => { books = b; render(); })
-  .catch(() => { $('#count').textContent = 'Could not load books.json'; });
-let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(render, 150); });
+fetch('books.json', { cache: 'no-cache' })
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+  .then(t => {
+    books = JSON.parse(t.replace(/^\uFEFF/, ''));
+    if (!Array.isArray(books)) throw new Error('books.json must be a list [ ... ]');
+    render();
+  })
+  .catch(e => { console.error(e); $('#count').textContent = 'books.json: ' + e.message; });
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(render, 150); });
 
 function render() {
-  const shelf = $('#shelf'), max = shelf.clientWidth - 56;
-  const rows = [[]]; let used = 0;
-  books.forEach((b, i) => {
-    const h = hash(b.title), w = 34 + (h >> 3) % 22, ht = 150 + h % 45;
-    if (used + w + 2 > max && rows.at(-1).length) { rows.push([]); used = 0; }
-    used += w + 2;
-    rows.at(-1).push({ b, i, w, ht, c: b.color || PAL[h % PAL.length] });
+  const shelf = $('#shelf');
+  const cols = Math.max(2, Math.min(6, Math.floor((shelf.clientWidth - 32 + 10) / 105)));
+  if (io) io.disconnect();
+  io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    io.unobserve(e.target);
+    const b = books[+e.target.dataset.i];
+    queue = queue.then(() => makeCover(b)).then(u => setCover(e.target, u));
+  }), { rootMargin: '200px' });
+
+  let html = '';
+  for (let i = 0; i < books.length; i += cols) {
+    html += `<div class="row" style="--cols:${cols}">` +
+      books.slice(i, i + cols).map((b, j) => card(b, i + j)).join('') + '</div><div class="plank"></div>';
+  }
+  shelf.innerHTML = html;
+  shelf.querySelectorAll('.book').forEach(el => {
+    const b = books[+el.dataset.i];
+    const cached = b.cover || store.get('cov:' + b.file);
+    if (cached) setCover(el, cached); else if (b.file) io.observe(el);
   });
-  shelf.innerHTML = rows.map(r =>
-    '<div class="row">' + r.map(({ b, i, w, ht, c }) =>
-      `<button class="book${b.file ? '' : ' locked'}" data-i="${i}" style="--w:${w}px;--h:${ht}px;--c:${c}"
-        title="${esc(b.title)}${b.author ? ' - ' + esc(b.author) : ''}">${esc(b.title)}${b.author ? '<small>' + esc(b.author) + '</small>' : ''}</button>`
-    ).join('') + '</div><div class="plank"></div>').join('');
   $('#count').textContent = books.length + ' books';
 }
-const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function card(b, i) {
+  const pct = +store.get('pct:' + b.file) || 0;
+  const c = b.color || PAL[hash(b.title) % PAL.length];
+  return `<button class="book" data-i="${i}" style="--c:${c}" title="${esc(b.title)}">
+    <span class="ph">${esc(b.title)}${b.author ? '<small>' + esc(b.author) + '</small>' : ''}</span>
+    ${pct ? `<i class="pct">${pct}%</i>` : ''}</button>`;
+}
+
+function setCover(el, url) {
+  if (!url) return;
+  el.style.backgroundImage = 'url("' + url.replace(/"/g, '%22') + '")';
+  el.classList.add('has');
+}
+
+// Cover: the "cover" field in books.json, else page 1 of a PDF / the cover of an EPUB (cached in this browser)
+async function makeCover(b) {
+  try {
+    let url = null;
+    if (b.file.toLowerCase().endsWith('.pdf')) {
+      const doc = await pdfjsLib.getDocument(b.file).promise;
+      const p = await doc.getPage(1), v0 = p.getViewport({ scale: 1 });
+      const v = p.getViewport({ scale: 300 / v0.width });
+      const c = document.createElement('canvas'); c.width = v.width; c.height = v.height;
+      await p.render({ canvasContext: c.getContext('2d'), viewport: v }).promise;
+      url = c.toDataURL('image/jpeg', .75);
+      doc.destroy();
+    } else {
+      const bk = ePub(b.file, { openAs: 'epub' });
+      const u = await bk.coverUrl();
+      if (u) url = await shrink(u);
+      bk.destroy();
+    }
+    if (url) store.set('cov:' + b.file, url);
+    return url;
+  } catch (e) { console.warn('cover failed', b.file, e); return null; }
+}
+function shrink(src) {
+  return new Promise((res, rej) => {
+    const im = new Image();
+    im.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = 300; c.height = Math.round(300 * im.height / im.width);
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+      res(c.toDataURL('image/jpeg', .75));
+    };
+    im.onerror = rej; im.src = src;
+  });
+}
 
 $('#shelf').addEventListener('click', e => {
   const el = e.target.closest('.book'); if (!el) return;
@@ -94,7 +162,6 @@ $('#shelf').addEventListener('click', e => {
   if (!b.file) return toast('Not available to read online');
   openBook(b);
 });
-
 function toast(m) {
   const el = $('#toast'); el.textContent = m; el.style.display = 'block';
   setTimeout(() => el.style.display = 'none', 2000);
@@ -105,24 +172,25 @@ async function openBook(b) {
   document.body.style.overflow = 'hidden';
   try {
     if (b.file.toLowerCase().endsWith('.pdf')) await openPdf(b); else await openEpub(b);
-  } catch (err) {
-    console.error(err);
-    $('#view').textContent = 'Could not open this book.';
-  }
+  } catch (err) { console.error(err); $('#view').textContent = 'Could not open this book.'; }
 }
 
 async function openEpub(b) {
   const book = ePub(b.file, { openAs: 'epub' });
   const r = book.renderTo('view', { width: '100%', height: '100%', flow: 'paginated', spread: 'none' });
   const key = 'pos:' + b.file;
+  const upd = l => {
+    if (l && l.start && book.locations.length())
+      store.set('pct:' + b.file, Math.round(book.locations.percentageFromCfi(l.start.cfi) * 100));
+  };
   await r.display(store.get(key) || undefined);
-  r.on('relocated', l => store.set(key, l.start.cfi));
+  r.on('relocated', l => { store.set(key, l.start.cfi); upd(l); });
+  book.ready.then(() => book.locations.generate(1200)).then(() => upd(r.currentLocation())).catch(() => {});
   go = d => d > 0 ? r.next() : r.prev();
   cleanup = () => book.destroy();
 }
 
 async function openPdf(b) {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   const doc = await pdfjsLib.getDocument(b.file).promise;
   const key = 'pos:' + b.file, view = $('#view');
   let n = Math.min(doc.numPages, +store.get(key) || 1);
@@ -130,13 +198,13 @@ async function openPdf(b) {
   const draw = async () => {
     const p = await doc.getPage(n), dpr = devicePixelRatio || 1;
     const base = p.getViewport({ scale: 1 });
-    const scale = Math.min(view.clientWidth / base.width, 1.6);
-    const v = p.getViewport({ scale: scale * dpr });
+    const v = p.getViewport({ scale: Math.min(view.clientWidth / base.width, 1.6) * dpr });
     canvas.width = v.width; canvas.height = v.height;
     canvas.style.width = v.width / dpr + 'px';
     await p.render({ canvasContext: canvas.getContext('2d'), viewport: v }).promise;
     $('#pos').textContent = n + ' / ' + doc.numPages;
-    view.scrollTop = 0; store.set(key, n);
+    view.scrollTop = 0;
+    store.set(key, n); store.set('pct:' + b.file, Math.round(n / doc.numPages * 100));
   };
   go = d => { n = Math.max(1, Math.min(doc.numPages, n + d)); draw(); };
   cleanup = () => doc.destroy();
@@ -147,6 +215,7 @@ function closeReader() {
   cleanup(); cleanup = () => {}; go = () => {};
   $('#view').innerHTML = ''; $('#reader').hidden = true;
   document.body.style.overflow = '';
+  render();   // refresh progress badges
 }
 $('#close').onclick = closeReader;
 $('#next').onclick = () => go(1);
