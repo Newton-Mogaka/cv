@@ -1,6 +1,5 @@
 [
-  { "title": "Example EPUB Book", "author": "Author Name", "file": "books/Copy of Lattimore - Greek Lyrics(1).pdf" },
-  { "title": "Example PDF Book", "author": "Author Name", "file": "books/Copy of A History of Haitian Literature.pdf", "color": "#1f3d5c" },
-  { "title": "Another Book", "author": "Another Author", "file": "books/Copy of A Gift of Love Sermons From Strength To Love and Other Preachings (King, Martin Luther King, Martin Luther).pdf" },
-  { "title": "Shown on the shelf, not readable", "author": "Someone Else" }
+  { "title": "Lattimore - Greek Lyrics(1)", "author": "Unknown", "file": "books/Copy of Lattimore - Greek Lyrics(1).pdf" },
+  { "title": "A History of Haitian Literature", "author": "Marlene L_ Daut (editor), Kaiama L_ Glover (editor)", "file": "books/Copy of A History of Haitian Literature.pdf", "color": "#1f3d5c" },
+  { "title": "A Gift of Love Sermons From Strength To Love and Other Preachings", "author": "King, Martin Luther King, Martin Luther", "file": "books/Copy of A Gift of Love Sermons From Strength To Love and Other Preachings (King, Martin Luther King, Martin Luther).pdf" },
 ]
