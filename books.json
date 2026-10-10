@@ -1,0 +1,5 @@
+[
+  { "title": "Example EPUB Book", "author": "Author Name", "file": "books/example.epub" },
+  { "title": "Example PDF Book", "author": "Author Name", "file": "books/example.pdf", "color": "#1f3d5c" },
+  { "title": "Shown on the shelf, not readable", "author": "Someone Else" }
+]
