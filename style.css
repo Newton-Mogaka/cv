@@ -1,4 +1,3 @@
-
 :root {
   /* color — light (default): neutral paper + ink + tea/clay accents */
   --bg: #FFFFFF;
@@ -15,6 +14,7 @@
   --font-body: 'Jakarta Sans';
   --font-mono: 'IBM Plex Mono', monospace;
 
+  /* radius */
   --radius: 3px;
 }
 
@@ -518,7 +518,7 @@ footer {
   padding: 0 6vw 4vh;
 }
 .post-hero-image img {
-  width: 100%;
+  weight: 100%;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   filter: grayscale(0.15);
@@ -646,4 +646,96 @@ footer {
     padding-right: 6vw;
   }
   .blog-row-top { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+}
+
+/* ============================================================
+   PAPERS
+   ============================================================ */
+.papers {
+  padding: 8vh 6vw;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.papers h2 {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  margin-bottom: 2.6rem;
+}
+
+.paper-card-wrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2.4rem;
+}
+
+.paper-card {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 2.4rem;
+  padding: 2.4rem 0;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.15s ease;
+}
+.paper-card:hover {
+  background: var(--line);
+}
+.paper-card:hover .paper-link {
+  text-decoration: underline;
+}
+
+.paper-visual {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 1;
+}
+.paper-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--line);
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.paper-body {
+  padding: 0;
+}
+.paper-body h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.4rem;
+}
+.paper-meta {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--accent-soft);
+  margin: 0 0 1rem;
+}
+.paper-link {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+.paper-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 880px) {
+  .paper-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .paper-visual {
+    margin: 0 auto 1.5rem;
+    max-width: 180px;
+  }
 }
