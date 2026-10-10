@@ -814,7 +814,11 @@ class RubiksCube {
     this.smallCubes.forEach(cube => {
       if (cube.position[info.axis] === info.value * (this.size + this.gap)) {
         cube.position.applyAxisAngle(axis, angle);
-        cube.rotation.applyAxisAngle(axis, angle);
+
+        // Fix: Apply rotation to Euler using quaternion
+        const q = new THREE.Quaternion().setFromAxisAngle(axis, angle);
+        cube.rotation.setFromQuaternion(q.multiply(new THREE.Quaternion().setFromEuler(cube.rotation)));
+
         // Update the cube's logical coordinates (ix, iy, iz) for future moves
         // We'll rotate the position vector around the axis and then map back to -1,0,1
         // We'll store the logical coordinates as a vector and rotate it.
@@ -865,7 +869,13 @@ class RubiksCube {
             // We'll rotate the cube's position around the axis passing through the origin (0,0,0) because the cubeGroup is at origin.
             // Actually the layer is at a fixed coordinate, so we rotate around the axis through the origin.
             cube.position.applyAxisAngle(axis, offset.a - cube.userData.lastRotAngle || 0);
-            cube.rotation.applyAxisAngle(axis, offset.a - cube.userData.lastRotAngle || 0);
+
+            // Fix: Apply rotation to Euler using quaternion
+            const rotationDelta = new THREE.Quaternion().setFromAxisAngle(axis, offset.a - (cube.userData.lastRotAngle || 0));
+            const currentQuat = new THREE.Quaternion().setFromEuler(cube.rotation);
+            currentQuat.multiply(rotationDelta);
+            cube.rotation.setFromQuaternion(currentQuat);
+
             cube.userData.lastRotAngle = offset.a;
           }
         });
