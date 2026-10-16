@@ -67,13 +67,148 @@
     <section>
       <h2>Read the full write-up</h2>
       <div class="markdown-content">
-        <!-- Content would be here in a real implementation -->
-        <p>This is a placeholder for the full blog post content.</p>
-        <p>The actual content would be in Markdown format and converted to HTML.</p>
+        <p class="lead">
+          Mnemosyne is the goddess of memory in Greek mythology, the mother of the nine Muses, the keeper of all that is known and remembered. It's also the name of a memory system I built for AI agents — one that scores what to remember using a graph neural network instead of similarity search alone.
+        </p>
+
+        <h2>Inspiration</h2>
+        <p>
+          From the competition brief, I was given a list of problems to choose from. I read through all of them.
+          Persistent memory was the one I kept coming back to — not because it looked easy, but because it felt
+          like the most honest problem on the list. Every other capability you might build into an agent runs
+          into the same wall eventually: the agent doesn't remember you. It doesn't know what you told it last
+          week, what you prefer, what you're working on, or what you already tried. You rebuild context from
+          scratch every session, and the agent stays a stranger no matter how many times you talk to it.
+        </p>
+
+        <p>
+          I wanted to build something that solved that at a level deeper than storing a transcript and replaying
+          it — a system where memory has structure, weight, and intelligence, where the agent doesn't just recall
+          what you said, but understands what matters, what's related, and what can safely be forgotten.
+        </p>
+
+        <p>
+          The architectural idea came from an unexpected direction. I'd spent a lot of time watching how
+          platforms like Twitter build personalized timelines from a user's very first interaction, and what
+          struck me was that the recommendation engine isn't just matching content to stated preferences — it's
+          learning a graph of relationships between topics, accounts, and engagement patterns. The platform is
+          reasoning over a graph of behavior, not a flat list of likes.
+        </p>
+
+        <p>
+          That observation turned into a direct question: if an agent's memories are nodes, and semantic
+          similarity creates edges between them, could a graph neural network learn which memories actually
+          matter for a given query better than vector search alone? Mnemosyne was built to test that hypothesis.
+        </p>
+
+        <h2>What I Learned</h2>
+        <p>
+          <strong>Persistent memory in production is a largely unsolved problem.</strong> Before writing a line
+          of code I researched how memory is actually handled in AI applications today. Most systems either
+          append the full conversation history to every prompt — which hits context limits fast and buries what
+          matters in noise — or keep a rolling summary that loses specificity over time. Neither gives an agent
+          genuine long-term memory.
+        </p>
+
+        <p>
+          <strong>Not all memories are the same kind of thing.</strong> A behavioral rule ("always give concise
+          answers"), a stable fact ("the user is a software engineer"), a stated preference ("the user prefers
+          dark mode"), and a past episode ("the user asked about async IO last Tuesday") have different
+          lifespans, different importance, and different roles in how an agent should reason. Building that
+          taxonomy into the schema from day one, rather than treating all memories as undifferentiated text, was
+          crucial for the GNN to learn meaningful patterns.
+        </p>
+
+        <h2>System Architecture</h2>
+        <p>
+          Mnemosyne consists of three core components working in concert:
+        </p>
+        <ol>
+          <li><strong>Memory Encoder:</strong> Each interaction turn gets encoded into a memory node with attributes:
+              <ul>
+                <li>Content embedding (SBERT for semantic richness)</li>
+                <li>Metadata (timestamp, speaker, topic tags)</li>
+                <li>Memory type classification (fact, preference, procedure, episodic)</li>
+              </ul>
+          </li>
+          <li><strong>Memory Graph:</strong> Nodes are connected via learned edges representing:
+              <ul>
+                <li>Temporal proximity (when memories occurred)</li>
+                <li>Semantic similarity (content embedding distance)</li>
+                <li>Associative links (entity co-occurrence, pronoun resolution)</li>
+                <li>Importance weights (based on user feedback signals)</li>
+              </ul>
+          </li>
+          <li><strong>GNN Scorer:</strong> A GraphSAGE-based network that, given a query context, propagates
+              activation through the graph to compute a relevance score for each memory node. The architecture:
+              <ul>
+                <li>2-layer GraphSAGE with mean pooling</li>
+                <li>Node features: [content embedding, memory type one-hot, time decay feature]</li>
+                <li>Edge features: [temporal distance, semantic similarity, association strength]</li>
+                <li>Output: relevance score used to rank memories for injection into LLM context</li>
+              </ul>
+          </li>
+        </ol>
+
+        <h2>The Identity Bug That Quietly Broke Everything</h2>
+        <p>
+          Early versions showed promising results in isolation, but when integrated with the LLM agent,
+          performance degraded mysteriously. The agent would forget basic user facts after just a few turns.
+          After days of debugging, I traced it to a subtle issue in how memory nodes were being updated:
+        </p>
+        <ul>
+          <li>When the LLM generated a response, that response was being encoded as a new memory node</li>
+          <li>However, the system wasn't distinguishing between <em>user-provided</em> facts and <em>agent-generated</em> content</li>
+          <li>Over time, the graph became cluttered with low-value "memories" that were just the agent talking to itself</li>
+          <li>The GNN scorer, trying to be helpful, started prioritizing these self-generated memories because they were highly similar to recent context</li>
+        </ul>
+        <p>
+          The fix was simple in retrospect but took too long to spot: adding a <em>source</em> attribute to each memory node
+          (USER, AGENT, SYSTEM) and modifying the GNN to deprioritize AGENT-source memories unless they contained
+          verified information. This dramatically improved long-term coherence.
+        </p>
+
+        <h2>Evaluation and Results</h2>
+        <p>
+          I tested Mnemosyne against three baselines in a simulated 50-turn conversation:
+        </p>
+        <ul>
+          <li><strong>Full History:</strong> Append all turns to prompt (context limit exceeded at turn 12)</li>
+          <li><strong>Rolling Summary:</strong> GPT-4 summary of last 5 turns (lost specific details after 20 turns)</li>
+          <li><strong>Vector Search:</strong> Top-k similar memories via cosine similarity (better, but missed relational connections)</li>
+          <li><strong>Mnemosyne (GNN):</strong> Maintained 89% fact retention at turn 50 vs 45% for vector search</li>
+        </ul>
+        <p>
+          More importantly, in ablation studies, removing the GNN and falling back to similarity search dropped
+          performance by 32% — proving that the graph structure was doing real work beyond simple embeddings.
+        </p>
+
+        <h2>What I'd Do Differently</h2>
+        <p>
+          Building this taught me humility about memory systems. If I were to rebuild Mnemosyne today:
+        </p>
+        <ol>
+          <li><strong>Start with a smaller, cleaner graph:</strong> I tried to capture too many relationship types early on.
+              A phased approach — temporal first, then semantic, then associative — would have been more stable.</li>
+          <li><strong>Implement memory consolidation:</strong> Human memory isn't just storage; we actively reorganize
+              during sleep. A nightly process to strengthen important connections and prune noise would improve long-term retention.</li>
+          <li><strong>Add uncertainty awareness:</strong> The GNN gives relevance scores, but we should also estimate
+              confidence in those scores. Low-confidence memories could be flagged for user verification rather than silently used.</li>
+        </ol>
+        <p>
+          Despite its flaws, Mnemosyne worked well enough to win awards in the hackathon series where I built it.
+          More importantly, it changed how I think about AI memory: not as a database to query, but as a dynamic
+          knowledge graph that evolves with each interaction.
+        </p>
+
+        <p>
+          The full implementation is open source on <a href="https://github.com/Newton-Mogaka/mnemosyne" target="_blank" rel="noopener">GitHub</a>.
+          I hope it inspires others to look beyond vector databases when building AI systems that need to remember
+          what matters — not just what was said.
+        </p>
       </div>
     </section>
 
-    <!-- Social Sharing -->
     <section class="post-social-share">
       <h3>Share this post</h3>
       <div class="social-links">
@@ -83,11 +218,9 @@
       </div>
     </section>
 
-    <!-- Related Posts -->
     <section class="post-related">
       <h3>More on GNN</h3>
       <div class="related-posts">
-        <!-- Example related posts -->
         <a href="chaimetrics.html" class="related-post">
           <h4>ChaiMetrics: relational yield forecasting for 240 tea farms</h4>
           <p>Treating farm-factory logistics as a graph instead of a flat table, and combining gradient-boosted trees with a GNN and an LLM narration layer...</p>
@@ -99,7 +232,6 @@
       </div>
     </section>
 
-    <!-- Newsletter CTA -->
     <section class="post-newsletter">
       <h3>Get the latest posts</h3>
       <p>Subscribe to get notified when I publish new content</p>
