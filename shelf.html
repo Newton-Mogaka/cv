@@ -9,6 +9,17 @@
 body{margin:0;min-height:100vh;background:#2a1a0e;color:#f1e4cf;font-family:Georgia,serif}
 h1{text-align:center;font-weight:normal;letter-spacing:2px;margin:24px 0 4px;font-size:22px}
 #count{text-align:center;opacity:.6;font-size:13px;margin-bottom:16px}
+
+/* View toggle */
+#view-toggle{display:flex;justify-content:center;gap:8px;margin-bottom:20px}
+#view-toggle button{
+  background:#0003;border:1px solid #fff3;color:#f1e4cf;padding:8px 16px;border-radius:4px;
+  font:13px Georgia,serif;cursor:pointer;transition:all .15s
+}
+#view-toggle button:hover{background:#0005}
+#view-toggle button.active{background:#8a5a3a;border-color:#d9ab74;color:#fff}
+
+/* Shelf view (original) */
 #shelf{max-width:860px;margin:0 auto 50px;padding:0 10px;
   background:linear-gradient(90deg,#4a2e1b,#8a5a3a 5%,#a06f48 50%,#8a5a3a 95%,#4a2e1b);
   border:8px solid #5a3a22;border-bottom:0;box-shadow:0 10px 40px #000}
@@ -30,6 +41,34 @@ h1{text-align:center;font-weight:normal;letter-spacing:2px;margin:24px 0 4px;fon
 .pct{position:absolute;right:6px;bottom:6px;width:34px;height:34px;border-radius:50%;
   background:#000a;color:#fff;font:600 11px/34px sans-serif;text-align:center;font-style:normal;
   box-shadow:0 0 0 2px #fff4}
+
+/* Table view (hackerbooks style) */
+#table-view{display:none;max-width:1100px;margin:0 auto;padding:0 16px}
+#table-view.active{display:block}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+thead{position:sticky;top:0;z-index:10}
+th{text-align:left;padding:10px 12px;background:#3a2618;color:#d9ab74;
+  font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px;
+  border-bottom:2px solid #5a3a22;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid #3a2618;vertical-align:middle}
+tr:hover td{background:#3a2618}
+tr.focused td{background:#4a2e1b;outline:2px solid #8a5a3a;outline-offset:-2px}
+td.title{font-family:Georgia,serif;font-size:14px;max-width:380px}
+td.title small{display:block;color:#b8956d;font-size:12px;margin-top:2px;font-style:italic}
+td.author{color:#d4c4a8;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+td.progress{text-align:right;font-variant-numeric:tabular-nums}
+td.status{text-align:center;white-space:nowrap}
+.progress-bar{width:100px;height:6px;background:#3a2618;border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle}
+.progress-fill{height:100%;background:linear-gradient(90deg,#8a5a3a,#d9ab74);border-radius:3px;transition:width .3s}
+.status-badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.status-unread{background:#3a2618;color:#b8956d}
+.status-reading{background:#1f3d5c;color:#7ab8e8}
+.status-read{background:#2f4a2b;color:#7ed97e}
+.status-dnf{background:#5a3b1e;color:#e8c47a}
+.empty-row td{padding:40px;text-align:center;color:#886;a8}
+
+/* Reader (unchanged) */
 #reader{position:fixed;inset:0;z-index:50;background:#f4ecd8;color:#2a1a0c}
 #reader[hidden]{display:none}
 #bar{position:absolute;top:0;left:0;right:0;height:48px;display:flex;align-items:center;gap:10px;padding:0 12px;
@@ -50,13 +89,48 @@ h1{text-align:center;font-weight:normal;letter-spacing:2px;margin:24px 0 4px;fon
 #toc .empty{padding:14px;opacity:.7;font-size:14px}
 @media(min-width:700px){#reader.toc-open #view{left:280px}}
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#000c;color:#fff;padding:8px 14px;border-radius:6px;display:none;z-index=60}
+
+/* Keyboard help modal */
+#kbd-help{position:fixed;inset:0;z-index:100;background:#000c;display:none;align-items:center;justify-content:center}
+#kbd-help[open]{display:flex}
+.kbd-panel{background:#2a1a0e;border:2px solid #5a3a22;border-radius:8px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow:auto}
+.kbd-panel h2{margin:0 0 16px;color:#d9ab74;font-weight:normal;letter-spacing:1px}
+.kbd-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #3a2618;font-size:13px}
+.kbd-row:last-child{border-bottom:none}
+.kbd-key{background:#0003;border:1px solid #fff3;padding:2px 8px;border-radius:3px;font-family:ui-monospace,monospace;font-size:11px;color:#d9ab74}
   </style>
 </head>
 <body>
 <h1>MY PERSONAL COLLECTION OF BOOKS</h1>
 <div id="count"></div>
+
+<!-- View toggle -->
+<div id="view-toggle">
+  <button id="btn-shelf" class="active" data-view="shelf">Shelf</button>
+  <button id="btn-table" data-view="table">Table</button>
+</div>
+
+<!-- Shelf view (original) -->
 <div id="shelf"></div>
 
+<!-- Table view (hackerbooks style) -->
+<div id="table-view">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:40%">Title</th>
+          <th style="width:25%">Author</th>
+          <th style="width:20%">Progress</th>
+          <th style="width:15%">Status</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Reader (unchanged) -->
 <div id="reader" hidden>
   <div id="bar">
     <button id="tocbtn" aria-label="Contents" title="Contents">&#9776;</button>
@@ -70,28 +144,43 @@ h1{text-align:center;font-weight:normal;letter-spacing:2px;margin:24px 0 4px;fon
 </div>
 <div id="toast"></div>
 
+<!-- Keyboard help modal -->
+<dialog id="kbd-help">
+  <div class="kbd-panel">
+    <h2>Keyboard Shortcuts</h2>
+    <div class="kbd-row"><span>Navigation</span><span><kbd class="kbd-key">j</kbd> / <kbd class="kbd-key">k</kbd> — Next / Previous row</span></div>
+    <div class="kbd-row"><span></span><span><kbd class="kbd-key">Enter</kbd> — Open book</span></div>
+    <div class="kbd-row"><span></span><span><kbd class="kbd-key">g</kbd> <kbd class="kbd-key">s</kbd> — Shelf view | <kbd class="kbd-key">g</kbd> <kbd class="kbd-key">t</kbd> — Table view</span></div>
+    <div class="kbd-row"><span></span><span><kbd class="kbd-key">/</kbd> — Focus search (future)</span></div>
+    <div class="kbd-row"><span>Reader</span><span><kbd class="kbd-key">←</kbd> / <kbd class="kbd-key">→</kbd> — Prev / Next page</span></div>
+    <div class="kbd-row"><span></span><span><kbd class="kbd-key">Esc</kbd> — Close reader / Close modal</span></div>
+    <div class="kbd-row"><span></span><span><kbd class="kbd-key">?</kbd> — Show this help</span></div>
+  </div>
+</dialog>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/epub.js/0.3.93/epub.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
 const PAL = ['#7a1f1f','#1f3d5c','#2f4a2b','#5a3b1e','#3b2a52','#8a6a1c','#22454a','#6b2c3e'];
 const hash = s => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
-const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&', '<': '<', '>': '>', '"': '"' }[c]));
 const store = {
   get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }
 };
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-let books = [], go = () => {}, cleanup = () => {}, relayout = () => {}, queue = Promise.resolve(), io = null;
+
+let books = [], currentView = 'shelf', tableFocusIndex = -1;
+let go = () => {}, cleanup = () => {}, relayout = () => {}, queue = Promise.resolve(), io = null;
 let tocItems = [], tocPick = () => {};
 
 function enableScrollNavigation(viewer, goFn) {
-  // Threshold in pixels from edge to trigger page turn
   const THRESHOLD = 80;
   let ticking = false;
   let lastScrollTop = 0;
-
   function onScroll() {
     if (ticking) return;
     ticking = true;
@@ -99,16 +188,11 @@ function enableScrollNavigation(viewer, goFn) {
       const { scrollTop, scrollHeight, clientHeight } = viewer;
       const atBottom = scrollTop + clientHeight >= scrollHeight - THRESHOLD;
       const atTop = scrollTop <= THRESHOLD;
-
-      if (atBottom) {
-        goFn(1); // next page
-      } else if (atTop) {
-        goFn(-1); // previous page
-      }
+      if (atBottom) goFn(1);
+      else if (atTop) goFn(-1);
       ticking = false;
     });
   }
-
   viewer.addEventListener('scroll', onScroll);
   return () => viewer.removeEventListener('scroll', onScroll);
 }
@@ -124,6 +208,12 @@ fetch('books.json', { cache: 'no-cache' })
 let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(render, 150); });
 
 function render() {
+  $('#count').textContent = books.length + ' books';
+  if (currentView === 'shelf') renderShelf();
+  else renderTable();
+}
+
+function renderShelf() {
   const shelf = $('#shelf');
   const cols = Math.max(2, Math.min(6, Math.floor((shelf.clientWidth - 32 + 10) / 105)));
   if (io) io.disconnect();
@@ -145,7 +235,8 @@ function render() {
     const cached = b.cover || store.get('cov:' + b.file);
     if (cached) setCover(el, cached); else if (b.file) io.observe(el);
   });
-  $('#count').textContent = books.length + ' books';
+  $('#shelf').style.display = 'block';
+  $('#table-view').classList.remove('active');
 }
 
 function card(b, i) {
@@ -162,7 +253,6 @@ function setCover(el, url) {
   el.classList.add('has');
 }
 
-// Cover: the "cover" field in books.json, else page 1 of a PDF / the cover of an EPUB (cached in this browser)
 async function makeCover(b) {
   try {
     let url = null;
@@ -197,12 +287,117 @@ function shrink(src) {
   });
 }
 
+// Table view rendering
+function renderTable() {
+  const tbody = $('#table-body');
+  tbody.innerHTML = books.map((b, i) => tableRow(b, i)).join('') || '<tr class="empty-row"><td colspan="4">No books in collection</td></tr>';
+  $('#shelf').style.display = 'none';
+  $('#table-view').classList.add('active');
+  // Reset focus
+  tableFocusIndex = -1;
+  updateTableFocus();
+}
+
+function tableRow(b, i) {
+  const pct = +store.get('pct:' + b.file) || 0;
+  let status = 'unread', statusLabel = 'Unread';
+  if (pct === 100) { status = 'read'; statusLabel = 'Read'; }
+  else if (pct > 0) { status = 'reading'; statusLabel = 'Reading'; }
+  // Could add DNF detection later
+  return `<tr data-index="${i}">
+    <td class="title">${esc(b.title)}<small>${esc(b.author || 'Unknown author')}</small></td>
+    <td class="author">${esc(b.author || 'Unknown')}</td>
+    <td class="progress">
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <span style="margin-left:8px;font-variant-numeric:tabular-nums">${pct}%</span>
+    </td>
+    <td class="status"><span class="status-badge status-${status}">${statusLabel}</span></td>
+  </tr>`;
+}
+
+function updateTableFocus() {
+  $$('#table-body tr[data-index]').forEach((tr, idx) => {
+    tr.classList.toggle('focused', idx === tableFocusIndex);
+  });
+  // Scroll into view if focused
+  if (tableFocusIndex >= 0) {
+    const tr = $('#table-body tr[data-index="' + tableFocusIndex + '"]');
+    if (tr) tr.scrollIntoView({ block: 'nearest' });
+  }
+}
+
+// View switching
+function setView(view) {
+  currentView = view;
+  $('#btn-shelf').classList.toggle('active', view === 'shelf');
+  $('#btn-table').classList.toggle('active', view === 'table');
+  render();
+}
+
+$('#btn-shelf').onclick = () => setView('shelf');
+$('#btn-table').onclick = () => setView('table');
+
 $('#shelf').addEventListener('click', e => {
   const el = e.target.closest('.book'); if (!el) return;
   const b = books[+el.dataset.i];
   if (!b.file) return toast('Not available to read online');
   openBook(b);
 });
+
+$('#table-body').addEventListener('click', e => {
+  const tr = e.target.closest('tr[data-index]'); if (!tr) return;
+  const b = books[+tr.dataset.index];
+  if (!b.file) return toast('Not available to read online');
+  openBook(b);
+});
+
+// Keyboard shortcuts
+let gSequence = false;
+addEventListener('keydown', e => {
+  // Global shortcuts
+  if (e.key === '?') {
+    e.preventDefault();
+    $('#kbd-help').showModal();
+    return;
+  }
+  if (e.key === 'Escape') {
+    if (!$('#reader').hidden) { closeReader(); return; }
+    if ($('#kbd-help').open) { $('#kbd-help').close(); return; }
+  }
+  if (e.key === '/') {
+    e.preventDefault();
+    // Future: focus search input
+    return;
+  }
+  // g-sequence: g s / g t
+  if (gSequence) {
+    if (e.key === 's') { e.preventDefault(); setView('shelf'); }
+    else if (e.key === 't') { e.preventDefault(); setView('table'); }
+    gSequence = false;
+    return;
+  }
+  if (e.key === 'g') { gSequence = true; return; }
+
+  // Table navigation
+  if (currentView === 'table' && !$('#reader').hidden === false) {
+    if (e.key === 'j') { e.preventDefault(); tableFocusIndex = Math.min(tableFocusIndex + 1, books.length - 1); updateTableFocus(); }
+    else if (e.key === 'k') { e.preventDefault(); tableFocusIndex = Math.max(tableFocusIndex - 1, 0); updateTableFocus(); }
+    else if (e.key === 'Enter' && tableFocusIndex >= 0) {
+      e.preventDefault();
+      const b = books[tableFocusIndex];
+      if (b.file) openBook(b);
+      else toast('Not available to read online');
+    }
+  }
+
+  // Reader shortcuts
+  if (!$('#reader').hidden) {
+    if (e.key === 'ArrowRight') go(1);
+    else if (e.key === 'ArrowLeft') go(-1);
+    else if (e.key === 'Escape') closeReader();
+  }
+});
+
 function toast(m) {
   const el = $('#toast'); el.textContent = m; el.style.display = 'block';
   setTimeout(() => el.style.display = 'none', 2000);
@@ -273,10 +468,8 @@ async function openEpub(b) {
   relayout = () => r.resize();
   cleanup = () => {
     book.destroy();
-    // Remove scroll listener if any
     if (window._scrollRemove) { window._scrollRemove(); window._scrollRemove = null; }
   };
-  // Add scroll navigation
   const removeScroll = enableScrollNavigation($('#view'), go);
   window._scrollRemove = removeScroll;
 }
@@ -326,7 +519,6 @@ async function openPdf(b) {
   relayout = () => draw();
   cleanup = () => {
     doc.destroy();
-    // Remove scroll listener if any
     if (window._scrollRemove) { window._scrollRemove(); window._scrollRemove = null; }
   };
   pdfToc(doc).then(items => {
@@ -334,7 +526,6 @@ async function openPdf(b) {
     markPdf();
   }).catch(() => showToc([]));
   await draw();
-  // Add scroll navigation
   const removeScroll = enableScrollNavigation(view, go);
   window._scrollRemove = removeScroll;
 }
@@ -349,12 +540,6 @@ function closeReader() {
 $('#close').onclick = closeReader;
 $('#next').onclick = () => go(1);
 $('#prev').onclick = () => go(-1);
-addEventListener('keydown', e => {
-  if ($('#reader').hidden) return;
-  if (e.key === 'ArrowRight') go(1);
-  else if (e.key === 'ArrowLeft') go(-1);
-  else if (e.key === 'Escape') closeReader();
-});
 </script>
 </body>
 </html>
