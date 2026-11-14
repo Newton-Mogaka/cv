@@ -1,20 +1,16 @@
 [
   { "title": "Lattimore - Greek Lyrics", "author": "Richmond Lattimore", "file": "books/Lattimore.pdf" },
   { "title": "A History of Haitian Literature", "author": "Marlene L. Daut & Kaiama L. Glover (eds.)", "file": "books/A History of Haitian Literature.pdf" },
-  { "title": "A Gift of Love: Sermons from Strength to Love", "author": "Martin Luther King Jr.", "file": "books/A Gift of Love Sermons From Strength To Love and Other Preachings (King, Martin Luther).pdf" },
+  { "title": "A Gift of Love: Sermons from Strength to Love", "author": "Martin Luther King Jr.", "file": "books/A Gift of Love Sermons From Strength To Love and Other Preachings (King, Martin Luther King, Martin Luther).pdf" },
   { "title": "Nox", "author": "Anne Carson", "file": "books/Nox Spanish Edition.pdf" },
-  { "title": "The Prophet", "author": "Kahlil Gibran", "file": "books/The Prophet.pdf" },
-  {"title": "The Souls of Black Folk", "author": "W.E.B. Du Bois", "file": "books/The Souls of Black Folk.pdf" },
-  { "title": "The Collected Poems of Langston Hughes", "author": "Langston Hughes", "file": "books/The Collected Poems of Langston Hughes.pdf" },
-  { "title": "The Complete Poems of Emily Dickinson", "author": "Emily Dickinson", "file": "books/The Complete Poems of Emily Dickinson.pdf" },
+  { "title": "The Prophet", "author": "Kahlil Gibran", "file": "books/The Prophet .pdf" },
   { "title": "Artificial Intelligence - A Modern Approach (3rd Edition)", "author": "Stuart Russell & Peter Norvig", "file": "books/Artificial Intelligence - A Modern Approach (3rd Edition).pdf" },
   { "title": "Main Street", "author": "Sinclair Lewis", "file": "books/Main Street.epub" },
   { "title": "A Colony of Citizens: Revolution & Slave Emancipation", "author": "Laurent Dubois", "file": "books/A Colony of Citizens Revolution and Slave Emancipation in the French Caribbean.pdf" },
   { "title": "A Field Guide to White Supremacy", "author": "Kathleen Belew & Ramon A. Gutierrez (eds.)", "file": "books/A Field Guide to White Supremacy.pdf" },
   { "title": "Ovid", "author": "Trans. Melville", "file": "books/Ovid.pdf" },
-  { "title": "The Collected Poems of Langston Hughes", "author": "Langston Hughes", "file": "books/The_Collected_Poems_of_Langston_Hughes.pdf" },
   { "title": "Sex and the Church in the Long Eighteenth Century", "author": "William Gibson", "file": "books/Sex and the Church in the Long Eighteenth Century.pdf" },
   { "title": "A Burst of Light and Other Essays", "author": "Audre Lorde", "file": "books/A Burst of Light and Other Essays.pdf" },
-  { "title": "A Shining Thread of Hope", "author": "Darlene Clark Hine & Kathleen Thompson", "file": "books/A Shining Thread of Hope.pdf" },
+  { "title": "A Shining Thread of Hope", "author": "Darlene Clark Hine & Kathleen Thompson", "file": "books/A Shining Thread of Hope - The History of Black Women in America.pdf" },
   { "title": "Euripides", "author": "Trans. Carson", "file": "books/Euripides.epub" }
 ]
