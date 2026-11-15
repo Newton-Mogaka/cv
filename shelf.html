@@ -66,7 +66,7 @@ td.status{text-align:center;white-space:nowrap}
 .status-reading{background:#1f3d5c;color:#7ab8e8}
 .status-read{background:#2f4a2b;color:#7ed97e}
 .status-dnf{background:#5a3b1e;color:#e8c47a}
-.empty-row td{padding:40px;text-align:center;color:#886;a8}
+.empty-row td{padding:40px;text-align:center;color:#8868a8}
 
 /* Reader (unchanged) */
 #reader{position:fixed;inset:0;z-index:50;background:#f4ecd8;color:#2a1a0c}
@@ -78,7 +78,7 @@ td.status{text-align:center;white-space:nowrap}
 #view{position:absolute;top:48px;bottom:0;left:0;right:0;overflow:auto;text-align:center}
 #view canvas{max-width:100%}
 #view{transition:left .2s}
-#toc{position:absolute;top:48px;bottom:0;left:0;width:280px;max-width:85%;z-index=3;overflow:auto;
+#toc{position:absolute;top:48px;bottom:0;left:0;width:280px;max-width:85%;z-index:3;overflow:auto;
   background:#efe3c8;border-right:1px solid #0003;box-shadow:4px 0 14px #0004;
   transform:translateX(-100%);transition:transform .2s}
 #reader.toc-open #toc{transform:none}
@@ -88,7 +88,7 @@ td.status{text-align:center;white-space:nowrap}
 #toc button.on{background:#d9c49a;font-weight:700}
 #toc .empty{padding:14px;opacity:.7;font-size:14px}
 @media(min-width:700px){#reader.toc-open #view{left:280px}}
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#000c;color:#fff;padding:8px 14px;border-radius:6px;display:none;z-index=60}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#000c;color:#fff;padding:8px 14px;border-radius:6px;display:none;z-index:60}
 
 /* Keyboard help modal */
 #kbd-help{position:fixed;inset:0;z-index:100;background:#000c;display:none;align-items:center;justify-content:center}
@@ -445,7 +445,7 @@ function triggerDownload(b) {
       </style>
     </head>
     <body>
-      <h1>Hello, Vanessa.</h1>
+      <h1>Hello. Vanessa</h1>
       <p>Your book is Downloading. Leave a thumbs up! 👍</p>
       <div class="progress"><div class="progress-fill"></div></div>
     </body>
